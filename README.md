@@ -1,7 +1,8 @@
 # 拾刻 · SleepReady
 
 > 一款单机离线的睡前 / 生活记录 Android 应用。  
-> 把日程、灵感、定时入睡和值得记下的瞬间，收进一个干净温暖的小本子。
+> 把日程、灵感、定时入睡（定时开启或者关闭手机某个功能如蓝牙、手电筒、飞行模式等，本项目因安卓安全管理原因暂时未全部完成）和值得记下的瞬间，收进一个干净温暖的小本子。
+联系作者可提供最终版（最终版需改写手机某些权限，注意安全）
 
 [![Android](https://img.shields.io/badge/Android-26%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
