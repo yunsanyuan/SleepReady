@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.kotlin/
+
+# IDE / 本地工具
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.arts/
+.codeartsdoer/
+.kiro/
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 签名与密钥（发布用 keystore 切勿入库）
+*.jks
+*.keystore
+*.pem
+
+# 日志与崩溃转储
+*.log
+build_log.txt
+build_exit.txt
+*.hprof
+hs_err_pid*
+
+# 本地生成的作业 / 报告产物（源码 report/ 如需公开可删掉下一行）
+# report/*.docx

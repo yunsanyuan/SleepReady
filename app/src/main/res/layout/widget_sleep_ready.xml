@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/widget_background">
+
+    <Button
+        android:id="@+id/widget_quick_start_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/widget_quick_start_label"
+        android:textSize="16sp"
+        android:textColor="#0F1116"
+        android:background="@drawable/widget_button_background" />
+
+</FrameLayout>

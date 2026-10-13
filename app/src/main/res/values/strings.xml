@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">拾刻</string>
+    <string name="widget_quick_start_label">一键开始上次的入梦模式</string>
+    <string name="macro_accessibility_desc">用于在解锁后自动点击系统设置页中的开关，仅在你启用并完成宏录制后生效。</string>
+    <string name="alarm_ring_title">闹钟提醒</string>
+    <string name="alarm_ring_stop">关闭闹钟</string>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 拾刻 launcher background：深靛蓝渐变底色（与 Dawn 主题一致） -->
+    <color name="ic_launcher_background">#1B1F3A</color>
+</resources>

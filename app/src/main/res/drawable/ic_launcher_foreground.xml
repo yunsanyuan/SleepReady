@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android Studio Image Asset 默认风格的占位前景图标。
+     108x108dp 安全区，主图保持在中心 72dp 内。沙漏轮廓由两个三角形 + 顶/底/中环组成，
+     与拾刻"时间记录"的产品定位呼应。用户后续可通过 Image Asset Studio 替换。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 沙漏外框 -->
+    <path
+        android:pathData="M40,32 L68,32 L68,38 L66,46 L60,52 L54,55 L48,52 L42,46 L40,38 Z"
+        android:strokeColor="#F4D27A"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M40,76 L68,76 L68,70 L66,62 L60,56 L54,53 L48,56 L42,62 L40,70 Z"
+        android:strokeColor="#F4D27A"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000" />
+    <!-- 顶部横档 -->
+    <path
+        android:pathData="M37,32 L71,32"
+        android:strokeColor="#F4D27A"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+    <!-- 底部横档 -->
+    <path
+        android:pathData="M37,76 L71,76"
+        android:strokeColor="#F4D27A"
+        android:strokeWidth="3"
+        android:strokeLineCap="round" />
+    <!-- 中心连接环 -->
+    <path
+        android:pathData="M51,54 L57,54"
+        android:strokeColor="#F4D27A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <!-- 上半部分细沙 -->
+    <path
+        android:pathData="M48,42 L60,42 L57,48 L54,50 L51,48 Z"
+        android:fillColor="#E89B5B" />
+    <!-- 下半部分堆积 -->
+    <path
+        android:pathData="M46,72 L62,72 L60,68 L54,66 L48,68 Z"
+        android:fillColor="#E89B5B" />
+</vector>

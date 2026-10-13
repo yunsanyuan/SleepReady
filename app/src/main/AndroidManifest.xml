@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Foreground service & notifications -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Exact alarm scheduling for Doze-resilient countdown -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+    <!-- Direct-action switches -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <!-- 日程提醒需要震动权限（API < 33 即可静默生效，无对话框） -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- 设备重启后恢复闹钟 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 闹钟铃声需要：常驻 wake lock + 锁屏全屏 Intent + 解除锁屏 + 唤醒屏幕 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
+
+    <!-- Referenced by design as a special permission users may navigate to in Settings.
+         Not actually granted to non-system apps; declared so it appears in the matrix
+         and lint won't flag a permission referenced from code. -->
+    <uses-permission
+        android:name="android.permission.WRITE_APN_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Eye-comfort / night-mode toggle writes to Settings.System; granted via the
+         system "Modify system settings" page launched from PermissionMatrix. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Flashlight feature (optional; app works on devices without a flash) -->
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <!-- NOTE: android.permission.INTERNET is intentionally NOT declared.
+         The app is fully offline; omitting INTERNET blocks any accidental network access. -->
+
+    <application
+        android:name=".SleepReadyApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SleepReady">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.SleepReady">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Foreground service running the countdown + execution flow -->
+        <service
+            android:name=".service.SleepReadyTimerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="bedtime_routine" />
+        </service>
+
+        <!-- 闹钟铃声前台服务（响铃 + 持续震动 + WakeLock） -->
+        <service
+            android:name=".service.schedule.AlarmRingService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="alarm_ring" />
+        </service>
+
+        <!-- 闹钟全屏 Activity（锁屏唤起） -->
+        <activity
+            android:name=".service.schedule.AlarmRingActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.SleepReady"
+            tools:targetApi="o_mr1" />
+
+        <!-- 宏录制 / 回放无障碍服务（默认关闭，由用户在设置中启用） -->
+        <service
+            android:name=".service.macro.MacroAccessibilityService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/macro_accessibility_service_config" />
+        </service>
+
+        <!-- 监听用户解锁，回放延后的 B 类（GUIDED）开关 -->
+        <receiver
+            android:name=".service.UnlockReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 起床后自动恢复广播：由 AlarmManager.setExactAndAllowWhileIdle 唤起 -->
+        <receiver
+            android:name=".service.RestoreReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.sleepready.timer.AUTO_RESTORE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Receives the exact-alarm timeout broadcast and forwards back to the service -->
+        <receiver
+            android:name=".service.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.sleepready.timer.TIMEOUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 日程提醒：AlarmManager → 系统通知 + 震动 -->
+        <receiver
+            android:name=".service.schedule.ScheduleReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.sleepready.schedule.REMIND" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 设备重启后恢复所有日程闹钟 -->
+        <receiver
+            android:name=".service.schedule.BootCompletedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 应用更新后恢复所有日程闹钟 -->
+        <receiver
+            android:name=".service.schedule.MyPackageReplacedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Handles widget click actions (quick-start last config) -->
+        <receiver
+            android:name=".widget.WidgetReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.sleepready.widget.QUICK_START" />
+            </intent-filter>
+        </receiver>
+
+        <!-- App widget provider (must be exported for the AppWidget framework) -->
+        <receiver
+            android:name=".widget.SleepReadyWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sleep_ready_widget_info" />
+        </receiver>
+
+    </application>
+
+</manifest>

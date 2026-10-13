@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Placeholder application theme. The real Compose theme (SleepReadyTheme)
+         is applied at runtime; this resource exists so the manifest reference resolves. -->
+    <style name="Theme.SleepReady" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
